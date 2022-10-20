@@ -5,13 +5,22 @@
     <ClCompile Include="Test_HashTable.cpp">
       <Filter>AutoTest</Filter>
     </ClCompile>
+    <ClCompile Include="ManualTest_HashTable.cpp">
+      <Filter>ManualTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ManualTest_HashTable.h">
+      <Filter>ManualTest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AutoTest">
       <UniqueIdentifier>{7b0151f7-fcf1-461b-8e70-a126443a4ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ManualTest">
+      <UniqueIdentifier>{6d982a57-b084-4016-b414-41fe4cdbcdc0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
