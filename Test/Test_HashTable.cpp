@@ -425,9 +425,11 @@ TEST(HashTableInsert, InsertDeleteInsert)
 
 	// 削除する
 	ASSERT_TRUE(Table.Delete(0));
+	ASSERT_EQ(0, Table.GetSize());			// 要素数チェック
 
 	// 2回目の挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
+	EXPECT_EQ(1, Table.GetSize());			// 要素数チェック
 }
 
 #pragma endregion
