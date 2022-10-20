@@ -101,6 +101,11 @@ protected:
 template<class T>
 using HashTableBehaviorTest = HashTableTypedTest<T>;
 
+/**
+* @brief	ハッシュテーブルテスト用フィクスチャの別名
+*/
+using HashTableInsertF = HashTableFixture;
+
 typedef ::testing::Types<RemainderHash, RoundHash, Hash> HashFuncs;
 TYPED_TEST_CASE(HashTableBehaviorTest, HashFuncs);
 
@@ -328,8 +333,103 @@ TEST(HashTableGetDataNum, ChainDelete)
 	// 削除
 	ASSERT_TRUE(Table.Delete(0));
 
-	EXPECT_EQ(2, Table.GetSize());
+	EXPECT_EQ(1, Table.GetSize());
 }
 
 #pragma endregion
+#pragma region ***** データの挿入 *****
+
+/**
+* @brief	リストが空である場合に、挿入した際の挙動
+* @details	ID:13
+*			データの挿入の機能のテストです
+*			リストが空の時にデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableInsert, Empty)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 追加
+	EXPECT_TRUE(Table.Insert(0, "Test0_0"));
+
+	// データ件数が増えているかチェック
+	EXPECT_EQ(1, Table.GetSize());
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、キーが重複しないで挿入した際の挙動
+* @details	ID:14
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にキーが重複しないようにデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST_F(HashTableInsertF, NotDuplicated)
+{
+	// 重複しないように追加
+	EXPECT_TRUE(m_Table.Insert(3, "Test3"));
+
+	// データ件数が増えているかチェック
+	EXPECT_EQ(4, m_Table.GetSize());
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、キーが重複して挿入しようとした際の挙動
+* @details	ID:15
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にキーが重複するようにデータを挿入した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST_F(HashTableInsertF, Duplicated)
+{
+	// 重複するように挿入
+	EXPECT_FALSE(m_Table.Insert(0, "Test0_1"));
+
+	// データ件数が増えていないかチェック
+	EXPECT_EQ(3, m_Table.GetSize());
+}
+
+/**
+* @brief	既にリストにある要素とハッシュ値が同じになるキーで挿入した際の挙動
+* @details	ID:16
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にハッシュ値が同じになるキーでデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST_F(HashTableInsertF, Synonym)
+{
+	// ハッシュ値が重複するように挿入
+	// キーの値を10で割ったときの余りをハッシュにしているので
+	// 10を渡すと0と同じハッシュになる
+	EXPECT_TRUE(m_Table.Insert(10, "Test0_1"));
+
+	// データ件数が増えているかチェック
+	EXPECT_EQ(4, m_Table.GetSize());
+}
+
+/**
+* @brief	一度挿入し、削除した後再度同じキーで挿入した際の挙動
+* @details	ID:16
+*			データの挿入の機能のテストです
+*			一度挿入し、削除した後に同じキーで挿入した時のの挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableInsert, InsertDeleteInsert)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 1回目の挿入
+	EXPECT_TRUE(Table.Insert(0, "Test0"));
+
+	// 削除する
+	ASSERT_TRUE(Table.Delete(0));
+
+	// 2回目の挿入
+	EXPECT_TRUE(Table.Insert(0, "Test0"));
+}
+
+#pragma endregion
+
 }
