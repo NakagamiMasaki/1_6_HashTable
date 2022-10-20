@@ -106,6 +106,7 @@ using HashTableBehaviorTest = HashTableTypedTest<T>;
 */
 using HashTableInsertF = HashTableFixture;
 using HashTableDeleteF = HashTableFixture;
+using HashTableFindF   = HashTableFixture;
 
 typedef ::testing::Types<RemainderHash, RoundHash, Hash> HashFuncs;
 TYPED_TEST_CASE(HashTableBehaviorTest, HashFuncs);
@@ -579,6 +580,154 @@ TEST(HashTableDelete, ChainElementDeleteInOrder)
 
 	// 要素数のチェック
 	EXPECT_EQ(0, Table.GetSize());
+}
+
+#pragma endregion
+#pragma region ***** データの検索 *****
+
+/**
+* @brief	リストが空である場合に、キーを指定して検索した際の挙動
+* @details	ID:27
+*			データの検索の機能のテストです
+*			リストが空の時に検索した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST(HashTableFind, Empty)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 検索
+	std::string Result;
+	EXPECT_FALSE(Table.Find(0, Result));
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、存在するキーで指定して検索した際の挙動
+* @details	ID:28
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、存在するキーで検索した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST_F(HashTableFindF, SomeDataExist)
+{
+	// 複数要素あることを確認
+	ASSERT_GT(m_Table.GetSize(), 2u);
+
+	// 検索
+	std::string Result;
+	EXPECT_TRUE(m_Table.Find(0, Result));
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、存在しないキーで指定して検索した際の挙動
+* @details	ID:29
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、存在しないキーで検索した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST_F(HashTableFindF, NotExistKey)
+{
+	// 複数要素あることを確認
+	ASSERT_GT(m_Table.GetSize(), 2u);
+
+	// 検索
+	std::string Result;
+	EXPECT_FALSE(m_Table.Find(3, Result));
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、同じキーで2連続で検索した際の挙動
+* @details	ID:30
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、同じキーで検索した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST_F(HashTableFindF, SameKey)
+{
+	// 複数要素あることを確認
+	ASSERT_GT(m_Table.GetSize(), 2u);
+
+	// 1回目の検索
+	std::string Result;
+	EXPECT_TRUE(m_Table.Find(0, Result));
+	EXPECT_EQ("Test0", Result);
+
+	// 2回目の検索
+	Result.clear();
+	EXPECT_TRUE(m_Table.Find(0, Result));
+	EXPECT_EQ("Test0", Result);
+
+}
+
+/**
+* @brief	既に削除されたキーで検索した際の挙動
+* @details	ID:31
+*			データの検索の機能のテストです
+*			既に削除されたキーで検索した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST(HashTableFind, DeletedKey)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 1件データを挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	// 削除
+	ASSERT_TRUE(Table.Delete(0));
+
+	// 検索
+	std::string Result;
+	EXPECT_FALSE(Table.Find(0, Result));
+}
+
+/**
+* @brief	チェインになっている要素の内の1つのキーを指定して検索した際の挙動
+* @details	ID:32
+*			データの検索の機能のテストです
+*			チェインになっている要素の内の一方で検索した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableFind, Chain)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 2件データを挿入
+	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 検索
+	std::string Result;
+	EXPECT_TRUE(Table.Find(0, Result));
+	EXPECT_EQ("Test0_0", Result);
+}
+
+/**
+* @brief	チェインになっている要素うちの1つの削除した後に、残っている要素を検索した際の挙動
+* @details	ID:33
+*			データの検索の機能のテストです
+*			チェインになっている要素の内の一方を削除し、残っている要素を検索した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableFind, DeleteChainOther)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 2件データを挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 片方を削除
+	ASSERT_TRUE(Table.Delete(0));
+
+	// 検索
+	std::string Result;
+	EXPECT_TRUE(Table.Find(10, Result));
+	EXPECT_EQ("Test0_1", Result);
 }
 
 #pragma endregion
