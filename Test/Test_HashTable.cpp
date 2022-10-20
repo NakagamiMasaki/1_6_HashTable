@@ -135,7 +135,201 @@ TYPED_TEST(HashTableBehaviorTest, HashFunction)
 #pragma endregion 
 #pragma region ***** データ数の取得 *****
 
+/**
+* @brief	リストが空である場合の戻り値
+* @details	ID:2
+*			データ数の取得の機能のテストです
+*			リストが空の時、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
+*/
+TEST(HashTableGetDataNum, Empty)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
 
+	EXPECT_EQ(0, Table.GetSize());
+}
+
+/**
+* @brief	要素を挿入した後の戻り値
+* @details	ID:3
+*			データ数の取得の機能のテストです
+*			要素を挿入したあとに、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
+*/
+TEST(HashTableGetDataNum, Insert)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	EXPECT_EQ(1, Table.GetSize());
+}
+
+/**
+* @brief	要素を挿入し、そのキーで削除した後の戻り値
+* @details	ID:4
+*			データ数の取得の機能のテストです
+*			要素を挿入したあとその要素を削除し、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
+*/
+TEST(HashTableGetDataNum, InsertDelete)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	// 削除
+	ASSERT_TRUE(Table.Delete(0));
+
+	EXPECT_EQ(0, Table.GetSize());
+}
+
+/**
+* @brief	既に存在するキーで要素の挿入をし失敗した後の戻り値
+* @details	ID:5
+*			データ数の取得の機能のテストです
+*			要素を挿入したあと同じキーで要素を挿入し失敗したあとにデータ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
+*/
+TEST(HashTableGetDataNum, InsertSecondTime)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	// さらに挿入
+	ASSERT_FALSE(Table.Insert(0, "Test0_1"));
+
+	EXPECT_EQ(1, Table.GetSize());
+}
+
+/**
+* @brief	リストに要素がある時に存在しないキーを指定し要素の削除に失敗した際の戻り値
+* @details	ID:6
+*			データ数の取得の機能のテストです
+*			要素を挿入したあと異なるキーで要素を削除し失敗したあとにデータ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
+*/
+TEST(HashTableGetDataNum, InsertDeleteFailed)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	// 違うキーで削除
+	ASSERT_FALSE(Table.Delete(1));
+
+	EXPECT_EQ(1, Table.GetSize());
+}
+
+/**
+* @brief	リストが空である場合に、削除を行った後の戻り値
+* @details	ID:7
+*			データ数の取得の機能のテストです
+*			リストが空の時に削除を行って失敗したあとに、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
+*/
+TEST(HashTableGetDataNum, EmptyDeleteFailed)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 空の状態で削除
+	ASSERT_FALSE(Table.Delete(0));
+
+	EXPECT_EQ(0, Table.GetSize());
+}
+
+/**
+* @brief	要素２つが内部でチェインになっていない時の戻り値
+* @details	ID:8
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになっていない時に、データ件数を取得した時の挙動を確認します。
+*			2が返れば成功です。
+*/
+TEST(HashTableGetDataNum, NotChain)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 追加
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+	ASSERT_TRUE(Table.Insert(1, "Test1"));
+
+	EXPECT_EQ(2, Table.GetSize());
+}
+
+/**
+* @brief	要素２つが内部でチェインになっていない時に一方を削除した後の戻り値
+* @details	ID:9
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになっていない時に一方を削除し、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
+*/
+TEST(HashTableGetDataNum, NotChainDelete)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 追加
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+	ASSERT_TRUE(Table.Insert(1, "Test1"));
+
+	// 削除
+	ASSERT_TRUE(Table.Delete(0));
+
+	EXPECT_EQ(1, Table.GetSize());
+}
+
+/**
+* @brief	要素２つが内部でチェインになった後の戻り値
+* @details	ID:10
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになった後に、データ件数を取得した時の挙動を確認します。
+*			2が返れば成功です。
+*/
+TEST(HashTableGetDataNum, Chain)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 追加
+	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	EXPECT_EQ(2, Table.GetSize());
+}
+
+/**
+* @brief	要素２つが内部でチェインになっている時に一方を削除した後の戻り値
+* @details	ID:11
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになった後に一方を削除し、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
+*/
+TEST(HashTableGetDataNum, ChainDelete)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 追加
+	ASSERT_TRUE(Table.Insert(0, "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 削除
+	ASSERT_TRUE(Table.Delete(0));
+
+	EXPECT_EQ(2, Table.GetSize());
+}
 
 #pragma endregion
 }
