@@ -105,6 +105,7 @@ using HashTableBehaviorTest = HashTableTypedTest<T>;
 * @brief	ハッシュテーブルテスト用フィクスチャの別名
 */
 using HashTableInsertF = HashTableFixture;
+using HashTableDeleteF = HashTableFixture;
 
 typedef ::testing::Types<RemainderHash, RoundHash, Hash> HashFuncs;
 TYPED_TEST_CASE(HashTableBehaviorTest, HashFuncs);
@@ -412,7 +413,7 @@ TEST_F(HashTableInsertF, Synonym)
 * @brief	一度挿入し、削除した後再度同じキーで挿入した際の挙動
 * @details	ID:16
 *			データの挿入の機能のテストです
-*			一度挿入し、削除した後に同じキーで挿入した時のの挙動を確認します。
+*			一度挿入し、削除した後に同じキーで挿入した時の挙動を確認します。
 *			trueが返れば成功です。
 */
 TEST(HashTableInsert, InsertDeleteInsert)
@@ -430,6 +431,154 @@ TEST(HashTableInsert, InsertDeleteInsert)
 	// 2回目の挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
 	EXPECT_EQ(1, Table.GetSize());			// 要素数チェック
+}
+
+#pragma endregion
+#pragma region ***** データの削除 *****
+
+/**
+* @brief	リストが空である場合に、削除操作をしようとした際の挙動
+* @details	ID:19
+*			データの削除の機能のテストです
+*			空の時にデータを削除した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST(HashTableDelete, Empty)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 削除
+	EXPECT_FALSE(Table.Delete(0));
+
+	// 要素数チェック
+	// 変に増えてたり減ってたりしてないか？
+	EXPECT_EQ(0, Table.GetSize());
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、存在するキーで指定して削除した際の挙動
+* @details	ID:20
+*			データの削除の機能のテストです
+*			複数の要素があるときに、存在するキーでデータを削除した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST_F(HashTableDeleteF, SomeDataExist)
+{
+	// 削除
+	EXPECT_TRUE(m_Table.Delete(0));
+
+	// 要素数チェック
+	EXPECT_EQ(2, m_Table.GetSize());
+}
+
+/**
+* @brief	リストに複数の要素がある場合に、存在しないキーで指定して削除しようとした際の挙動
+* @details	ID:21
+*			データの削除の機能のテストです
+*			複数の要素があるときに、存在しないキーでデータを削除した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST_F(HashTableDeleteF, SomeDataExitNotExistKey)
+{
+	// 削除
+	EXPECT_FALSE(m_Table.Delete(3));
+
+	// 要素数チェック
+	EXPECT_EQ(3, m_Table.GetSize());
+}
+
+/**
+* @brief	一度削除したキーで再度削除しようとした際の挙動
+* @details	ID:22
+*			データの削除の機能のテストです
+*			一度削除したキーでもう一度削除した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST(HashTableDelete, DeleteScondTime)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0, "Test0"));
+
+	// 1度削除
+	ASSERT_TRUE(Table.Delete(0));
+	
+	// 要素数チェック
+	ASSERT_EQ(0, Table.GetSize());
+
+	// 2回目の削除
+	EXPECT_FALSE(Table.Delete(0));
+
+	// 要素数チェック
+	EXPECT_EQ(0, Table.GetSize());
+}
+
+/**
+* @brief	チェインになっている要素うちの1つのキーを指定して削除した際の挙動
+* @details	ID:23
+*			データの削除の機能のテストです
+*			チェインになっている要素のうちの1つを削除した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableDelete, ChainElement)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 片方を削除
+	EXPECT_TRUE(Table.Delete(0));
+}
+
+/**
+* @brief	チェインになっている要素とハッシュ値が同じだが、存在しないキーを指定して削除した際の挙動
+* @details	ID:24
+*			データの削除の機能のテストです
+*			チェインになっている要素とハッシュ値が同じだが、存在しないキーで削除した時の挙動を確認します。
+*			falseが返れば成功です。
+*/
+TEST(HashTableDelete, ChainElementNotExistKey)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 存在しないキーで削除
+	EXPECT_FALSE(Table.Delete(20));
+	EXPECT_EQ(2, Table.GetSize());
+}
+
+/**
+* @brief	チェインになっている要素を順に削除していった際の挙動
+* @details	ID:25
+*			データの削除の機能のテストです
+*			チェインになっている要素を順に削除した時の挙動を確認します。
+*			trueが返れば成功です。
+*/
+TEST(HashTableDelete, ChainElementDeleteInOrder)
+{
+	// ハッシュテーブル
+	HashTable<int, std::string, RemainderHash, 10> Table;
+
+	// 挿入
+	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
+	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
+
+	// 順番に削除
+	EXPECT_TRUE(Table.Delete(0));
+	EXPECT_TRUE(Table.Delete(10));
+
+	// 要素数のチェック
+	EXPECT_EQ(0, Table.GetSize());
 }
 
 #pragma endregion
