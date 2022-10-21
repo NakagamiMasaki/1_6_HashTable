@@ -1,24 +1,24 @@
-/**
-* @brief	�n�b�V���e�[�u�� �����e�X�g
+﻿/**
+* @brief	ハッシュテーブル 自動テスト
 * @date		2022/10/20
 */
 
-//===== �C���N���[�h =====
+//===== インクルード =====
 #include "gtest/gtest.h"
 #include <functional>
 #include <string>
 #include "../HashTable/HashTable.h"
 
 /**
-* @brief	�n�b�V���e�[�u���̎����e�X�g
+* @brief	ハッシュテーブルの自動テスト
 */
 namespace ex06_HashTable
 {
 
-//===== �N���X��` =====
+//===== クラス定義 =====
 
 /**
-* @brief 10�Ŋ������]����n�b�V���Ƃ��ĕԂ�
+* @brief 10で割った余りをハッシュとして返す
 */
 class RemainderHash
 {
@@ -31,13 +31,13 @@ public:
 };
 
 /**
-* @brief	�n�b�V���l��0~9�ɂȂ�悤�Ɋۂ߂ĕԂ�
+* @brief	ハッシュ値が0~9になるように丸めて返す
 */
 class RoundHash
 {
 public:
 
-	// 0 ~ 9�ɂȂ�悤�Ɋۂ߂�
+	// 0 ~ 9になるように丸める
 	int32_t operator()(int key)
 	{
 		return key < 0 ? 0 : 10 <= key ? 9 : key;
@@ -45,7 +45,7 @@ public:
 };
 
 /**
-* @brief	std::hash()�Ōv�Z�����n�b�V���l��10�Ŋ������Ƃ��̗]���Ԃ�
+* @brief	std::hash()で計算したハッシュ値を10で割ったときの余りを返す
 */
 class Hash
 {
@@ -58,7 +58,7 @@ public:
 };
 
 /**
-* @brief �n�b�V���e�[�u���̌^�t���e�X�g�p�N���X
+* @brief ハッシュテーブルの型付けテスト用クラス
 */
 template<class T>
 class HashTableTypedTest : public ::testing::Test
@@ -66,14 +66,14 @@ class HashTableTypedTest : public ::testing::Test
 };
 
 /**
-* @brief	�n�b�V���e�[�u���̃e�X�g�p�t�B�N�X�`��
+* @brief	ハッシュテーブルのテスト用フィクスチャ
 */
 class HashTableFixture : public ::testing::Test
 {
-	//=== �����o�ϐ�
+	//=== メンバ変数
 protected:
 
-	// �f�[�^��3�������Ă���n�b�V���e�[�u��
+	// データが3件入っているハッシュテーブル
 	// KeyType  : int
 	// DataType : std::string
 	// Key | Data
@@ -82,12 +82,12 @@ protected:
 	//  2  | "Test2"
 	HashTable<int, std::string, RemainderHash, 10> m_Table;
 
-	//=== �����o�֐�
+	//=== メンバ関数
 protected:
 
 	void SetUp(void)
 	{
-		//*** �n�b�V���e�[�u���Ƀf�[�^��3���ǉ�����
+		//*** ハッシュテーブルにデータを3件追加する
 		m_Table.Insert(0, "Test0");
 		m_Table.Insert(1, "Test1");
 		m_Table.Insert(2, "Test2");
@@ -99,16 +99,16 @@ protected:
 
 };
 
-//===== �^�G�C���A�X =====
+//===== 型エイリアス =====
 
 /**
-* @brief	�n�b�V���e�[�u���̃N���X�̋����e�X�g�p�N���X
+* @brief	ハッシュテーブルのクラスの挙動テスト用クラス
 */
 template<class T>
 using HashTableBehaviorTest = HashTableTypedTest<T>;
 
 /**
-* @brief	�n�b�V���e�[�u���e�X�g�p�t�B�N�X�`���̕ʖ�
+* @brief	ハッシュテーブルテスト用フィクスチャの別名
 */
 using HashTableInsertF = HashTableFixture;
 using HashTableDeleteF = HashTableFixture;
@@ -117,164 +117,164 @@ using HashTableFindF   = HashTableFixture;
 typedef ::testing::Types<RemainderHash, RoundHash, Hash> HashFuncs;
 TYPED_TEST_CASE(HashTableBehaviorTest, HashFuncs);
 
-#pragma region ***** �N���X�̋��� *****
+#pragma region ***** クラスの挙動 *****
 
 /**
-* @brief	�Z�o���@�̈قȂ�K�؂ȃn�b�V���֐���n�����Ƃ��̂��ꂼ��̋���
+* @brief	算出方法の異なる適切なハッシュ関数を渡したときのそれぞれの挙動
 * @details	ID:1
-*			�Z�o���@���قȂ�n�b�V���֐��𗘗p���鎞�A�}���A�����A�폜������ɓ��삷�邱�Ƃ��m�F���܂�
-*			�}���A�����A�폜��true���Ԃ�ΐ����ł��B
+*			算出方法が異なるハッシュ関数を利用する時、挿入、検索、削除が正常に動作することを確認します
+*			挿入、検索、削除でtrueが返れば成功です。
 */
 TYPED_TEST(HashTableBehaviorTest, HashFunction)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, TypeParam, 10> Table;
 
-	//*** �}�����������폜�̏��Ɏ���
-	// �f�[�^�}��
+	//*** 挿入→検索→削除の順に試す
+	// データ挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
-	ASSERT_EQ(1, Table.GetSize());		// �v�f�����`�F�b�N
+	ASSERT_EQ(1, Table.GetSize());		// 要素数をチェック
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_TRUE(Table.Find(0, Result));
-	ASSERT_EQ(1, Table.GetSize());		// �v�f�����`�F�b�N
+	ASSERT_EQ(1, Table.GetSize());		// 要素数をチェック
 
-	// �폜
+	// 削除
 	EXPECT_TRUE(Table.Delete(0));
-	ASSERT_EQ(0, Table.GetSize());		// �v�f�����`�F�b�N
+	ASSERT_EQ(0, Table.GetSize());		// 要素数をチェック
 }
 
 #pragma endregion 
-#pragma region ***** �f�[�^���̎擾 *****
+#pragma region ***** データ数の取得 *****
 
 /**
-* @brief	���X�g����ł���ꍇ�̖߂�l
+* @brief	リストが空である場合の戻り値
 * @details	ID:2
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			���X�g����̎��A�f�[�^�������擾�������̋������m�F���܂��B
-*			0���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			リストが空の時、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
 */
 TEST(HashTableGetDataNum, Empty)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 /**
-* @brief	�v�f��}��������̖߂�l
+* @brief	要素を挿入した後の戻り値
 * @details	ID:3
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f��}���������ƂɁA�f�[�^�������擾�������̋������m�F���܂��B
-*			1���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素を挿入したあとに、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
 */
 TEST(HashTableGetDataNum, Insert)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 /**
-* @brief	�v�f��}�����A���̃L�[�ō폜������̖߂�l
+* @brief	要素を挿入し、そのキーで削除した後の戻り値
 * @details	ID:4
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f��}���������Ƃ��̗v�f���폜���A�f�[�^�������擾�������̋������m�F���܂��B
-*			0���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素を挿入したあとその要素を削除し、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
 */
 TEST(HashTableGetDataNum, InsertDelete)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
-	// �폜
+	// 削除
 	ASSERT_TRUE(Table.Delete(0));
 
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 /**
-* @brief	���ɑ��݂���L�[�ŗv�f�̑}���������s������̖߂�l
+* @brief	既に存在するキーで要素の挿入をし失敗した後の戻り値
 * @details	ID:5
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f��}���������Ɠ����L�[�ŗv�f��}�������s�������ƂɃf�[�^�������擾�������̋������m�F���܂��B
-*			1���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素を挿入したあと同じキーで要素を挿入し失敗したあとにデータ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
 */
 TEST(HashTableGetDataNum, InsertSecondTime)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
-	// ����ɑ}��
+	// さらに挿入
 	ASSERT_FALSE(Table.Insert(0, "Test0_1"));
 
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 /**
-* @brief	���X�g�ɗv�f�����鎞�ɑ��݂��Ȃ��L�[���w�肵�v�f�̍폜�Ɏ��s�����ۂ̖߂�l
+* @brief	リストに要素がある時に存在しないキーを指定し要素の削除に失敗した際の戻り値
 * @details	ID:6
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f��}���������ƈقȂ�L�[�ŗv�f���폜�����s�������ƂɃf�[�^�������擾�������̋������m�F���܂��B
-*			1���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素を挿入したあと異なるキーで要素を削除し失敗したあとにデータ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
 */
 TEST(HashTableGetDataNum, InsertDeleteFailed)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
-	// �Ⴄ�L�[�ō폜
+	// 違うキーで削除
 	ASSERT_FALSE(Table.Delete(1));
 
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 /**
-* @brief	���X�g����ł���ꍇ�ɁA�폜���s������̖߂�l
+* @brief	リストが空である場合に、削除を行った後の戻り値
 * @details	ID:7
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			���X�g����̎��ɍ폜���s���Ď��s�������ƂɁA�f�[�^�������擾�������̋������m�F���܂��B
-*			0���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			リストが空の時に削除を行って失敗したあとに、データ件数を取得した時の挙動を確認します。
+*			0が返れば成功です。
 */
 TEST(HashTableGetDataNum, EmptyDeleteFailed)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// ��̏�Ԃō폜
+	// 空の状態で削除
 	ASSERT_FALSE(Table.Delete(0));
 
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 /**
-* @brief	�v�f�Q�������Ń`�F�C���ɂȂ��Ă��Ȃ����̖߂�l
+* @brief	要素２つが内部でチェインになっていない時の戻り値
 * @details	ID:8
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f2���`�F�C���ɂȂ��Ă��Ȃ����ɁA�f�[�^�������擾�������̋������m�F���܂��B
-*			2���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになっていない時に、データ件数を取得した時の挙動を確認します。
+*			2が返れば成功です。
 */
 TEST(HashTableGetDataNum, NotChain)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �ǉ�
+	// 追加
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 	ASSERT_TRUE(Table.Insert(1, "Test1"));
 
@@ -282,40 +282,40 @@ TEST(HashTableGetDataNum, NotChain)
 }
 
 /**
-* @brief	�v�f�Q�������Ń`�F�C���ɂȂ��Ă��Ȃ����Ɉ�����폜������̖߂�l
+* @brief	要素２つが内部でチェインになっていない時に一方を削除した後の戻り値
 * @details	ID:9
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f2���`�F�C���ɂȂ��Ă��Ȃ����Ɉ�����폜���A�f�[�^�������擾�������̋������m�F���܂��B
-*			1���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになっていない時に一方を削除し、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
 */
 TEST(HashTableGetDataNum, NotChainDelete)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �ǉ�
+	// 追加
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 	ASSERT_TRUE(Table.Insert(1, "Test1"));
 
-	// �폜
+	// 削除
 	ASSERT_TRUE(Table.Delete(0));
 
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 /**
-* @brief	�v�f�Q�������Ń`�F�C���ɂȂ�����̖߂�l
+* @brief	要素２つが内部でチェインになった後の戻り値
 * @details	ID:10
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f2���`�F�C���ɂȂ�����ɁA�f�[�^�������擾�������̋������m�F���܂��B
-*			2���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになった後に、データ件数を取得した時の挙動を確認します。
+*			2が返れば成功です。
 */
 TEST(HashTableGetDataNum, Chain)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �ǉ�
+	// 追加
 	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
@@ -323,358 +323,358 @@ TEST(HashTableGetDataNum, Chain)
 }
 
 /**
-* @brief	�v�f�Q�������Ń`�F�C���ɂȂ��Ă��鎞�Ɉ�����폜������̖߂�l
+* @brief	要素２つが内部でチェインになっている時に一方を削除した後の戻り値
 * @details	ID:11
-*			�f�[�^���̎擾�̋@�\�̃e�X�g�ł�
-*			�v�f2���`�F�C���ɂȂ�����Ɉ�����폜���A�f�[�^�������擾�������̋������m�F���܂��B
-*			1���Ԃ�ΐ����ł��B
+*			データ数の取得の機能のテストです
+*			要素2つがチェインになった後に一方を削除し、データ件数を取得した時の挙動を確認します。
+*			1が返れば成功です。
 */
 TEST(HashTableGetDataNum, ChainDelete)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �ǉ�
+	// 追加
 	ASSERT_TRUE(Table.Insert(0, "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// �폜
+	// 削除
 	ASSERT_TRUE(Table.Delete(0));
 
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 #pragma endregion
-#pragma region ***** �f�[�^�̑}�� *****
+#pragma region ***** データの挿入 *****
 
 /**
-* @brief	���X�g����ł���ꍇ�ɁA�}�������ۂ̋���
+* @brief	リストが空である場合に、挿入した際の挙動
 * @details	ID:13
-*			�f�[�^�̑}���̋@�\�̃e�X�g�ł�
-*			���X�g����̎��Ƀf�[�^��}���������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの挿入の機能のテストです
+*			リストが空の時にデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableInsert, Empty)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �ǉ�
+	// 追加
 	EXPECT_TRUE(Table.Insert(0, "Test0_0"));
 
-	// �f�[�^�����������Ă��邩�`�F�b�N
+	// データ件数が増えているかチェック
 	EXPECT_EQ(1, Table.GetSize());
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA�L�[���d�����Ȃ��ő}�������ۂ̋���
+* @brief	リストに複数の要素がある場合に、キーが重複しないで挿入した際の挙動
 * @details	ID:14
-*			�f�[�^�̑}���̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����̗v�f�����鎞�ɃL�[���d�����Ȃ��悤�Ƀf�[�^��}���������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にキーが重複しないようにデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST_F(HashTableInsertF, NotDuplicated)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// �d�����Ȃ��悤�ɒǉ�
+	// 重複しないように追加
 	EXPECT_TRUE(m_Table.Insert(3, "Test3"));
 
-	// �f�[�^�����������Ă��邩�`�F�b�N
+	// データ件数が増えているかチェック
 	EXPECT_EQ(4, m_Table.GetSize());
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA�L�[���d�����đ}�����悤�Ƃ����ۂ̋���
+* @brief	リストに複数の要素がある場合に、キーが重複して挿入しようとした際の挙動
 * @details	ID:15
-*			�f�[�^�̑}���̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����̗v�f�����鎞�ɃL�[���d������悤�Ƀf�[�^��}���������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にキーが重複するようにデータを挿入した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST_F(HashTableInsertF, Duplicated)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// �d������悤�ɑ}��
+	// 重複するように挿入
 	EXPECT_FALSE(m_Table.Insert(0, "Test0_1"));
 
-	// �f�[�^�����������Ă��Ȃ����`�F�b�N
+	// データ件数が増えていないかチェック
 	EXPECT_EQ(3, m_Table.GetSize());
 }
 
 /**
-* @brief	���Ƀ��X�g�ɂ���v�f�ƃn�b�V���l�������ɂȂ�L�[�ő}�������ۂ̋���
+* @brief	既にリストにある要素とハッシュ値が同じになるキーで挿入した際の挙動
 * @details	ID:16
-*			�f�[�^�̑}���̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����̗v�f�����鎞�Ƀn�b�V���l�������ɂȂ�L�[�Ńf�[�^��}���������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの挿入の機能のテストです
+*			リストに複数の要素がある時にハッシュ値が同じになるキーでデータを挿入した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST_F(HashTableInsertF, Synonym)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// �n�b�V���l���d������悤�ɑ}��
-	// �L�[�̒l��10�Ŋ������Ƃ��̗]����n�b�V���ɂ��Ă���̂�
-	// 10��n����0�Ɠ����n�b�V���ɂȂ�
+	// ハッシュ値が重複するように挿入
+	// キーの値を10で割ったときの余りをハッシュにしているので
+	// 10を渡すと0と同じハッシュになる
 	EXPECT_TRUE(m_Table.Insert(10, "Test0_1"));
 
-	// �f�[�^�����������Ă��邩�`�F�b�N
+	// データ件数が増えているかチェック
 	EXPECT_EQ(4, m_Table.GetSize());
 }
 
 /**
-* @brief	��x�}�����A�폜������ēx�����L�[�ő}�������ۂ̋���
+* @brief	一度挿入し、削除した後再度同じキーで挿入した際の挙動
 * @details	ID:17
-*			�f�[�^�̑}���̋@�\�̃e�X�g�ł�
-*			��x�}�����A�폜������ɓ����L�[�ő}���������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの挿入の機能のテストです
+*			一度挿入し、削除した後に同じキーで挿入した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableInsert, InsertDeleteInsert)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// 1��ڂ̑}��
+	// 1回目の挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
 
-	// �폜����
+	// 削除する
 	ASSERT_TRUE(Table.Delete(0));
-	ASSERT_EQ(0, Table.GetSize());			// �v�f���`�F�b�N
+	ASSERT_EQ(0, Table.GetSize());			// 要素数チェック
 
-	// 2��ڂ̑}��
+	// 2回目の挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
-	EXPECT_EQ(1, Table.GetSize());			// �v�f���`�F�b�N
+	EXPECT_EQ(1, Table.GetSize());			// 要素数チェック
 }
 
 #pragma endregion
-#pragma region ***** �f�[�^�̍폜 *****
+#pragma region ***** データの削除 *****
 
 /**
-* @brief	���X�g����ł���ꍇ�ɁA�폜��������悤�Ƃ����ۂ̋���
+* @brief	リストが空である場合に、削除操作をしようとした際の挙動
 * @details	ID:19
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			��̎��Ƀf�[�^���폜�������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			空の時にデータを削除した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST(HashTableDelete, Empty)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �폜
+	// 削除
 	EXPECT_FALSE(Table.Delete(0));
 
-	// �v�f���`�F�b�N
-	// �ςɑ����Ă��茸���Ă��肵�ĂȂ����H
+	// 要素数チェック
+	// 変に増えてたり減ってたりしてないか？
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA���݂���L�[�Ŏw�肵�č폜�����ۂ̋���
+* @brief	リストに複数の要素がある場合に、存在するキーで指定して削除した際の挙動
 * @details	ID:20
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			�����̗v�f������Ƃ��ɁA���݂���L�[�Ńf�[�^���폜�������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			複数の要素があるときに、存在するキーでデータを削除した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST_F(HashTableDeleteF, SomeDataExist)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// �폜
+	// 削除
 	EXPECT_TRUE(m_Table.Delete(0));
 
-	// �v�f���`�F�b�N
+	// 要素数チェック
 	EXPECT_EQ(2, m_Table.GetSize());
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA���݂��Ȃ��L�[�Ŏw�肵�č폜���悤�Ƃ����ۂ̋���
+* @brief	リストに複数の要素がある場合に、存在しないキーで指定して削除しようとした際の挙動
 * @details	ID:21
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			�����̗v�f������Ƃ��ɁA���݂��Ȃ��L�[�Ńf�[�^���폜�������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			複数の要素があるときに、存在しないキーでデータを削除した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST_F(HashTableDeleteF, SomeDataExitNotExistKey)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// �폜
+	// 削除
 	EXPECT_FALSE(m_Table.Delete(3));
 
-	// �v�f���`�F�b�N
+	// 要素数チェック
 	EXPECT_EQ(3, m_Table.GetSize());
 }
 
 /**
-* @brief	��x�폜�����L�[�ōēx�폜���悤�Ƃ����ۂ̋���
+* @brief	一度削除したキーで再度削除しようとした際の挙動
 * @details	ID:22
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			��x�폜�����L�[�ł�����x�폜�������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			一度削除したキーでもう一度削除した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST(HashTableDelete, DeleteScondTime)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
-	// 1�x�폜
+	// 1度削除
 	ASSERT_TRUE(Table.Delete(0));
 	
-	// �v�f���`�F�b�N
+	// 要素数チェック
 	ASSERT_EQ(0, Table.GetSize());
 
-	// 2��ڂ̍폜
+	// 2回目の削除
 	EXPECT_FALSE(Table.Delete(0));
 
-	// �v�f���`�F�b�N
+	// 要素数チェック
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 /**
-* @brief	�`�F�C���ɂȂ��Ă���v�f������1�̃L�[���w�肵�č폜�����ۂ̋���
+* @brief	チェインになっている要素うちの1つのキーを指定して削除した際の挙動
 * @details	ID:23
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			�`�F�C���ɂȂ��Ă���v�f�̂�����1���폜�������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			チェインになっている要素のうちの1つを削除した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableDelete, ChainElement)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// �Е����폜
+	// 片方を削除
 	EXPECT_TRUE(Table.Delete(0));
 }
 
 /**
-* @brief	�`�F�C���ɂȂ��Ă���v�f�ƃn�b�V���l�����������A���݂��Ȃ��L�[���w�肵�č폜�����ۂ̋���
+* @brief	チェインになっている要素とハッシュ値が同じだが、存在しないキーを指定して削除した際の挙動
 * @details	ID:24
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			�`�F�C���ɂȂ��Ă���v�f�ƃn�b�V���l�����������A���݂��Ȃ��L�[�ō폜�������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			チェインになっている要素とハッシュ値が同じだが、存在しないキーで削除した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST(HashTableDelete, ChainElementNotExistKey)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// ���݂��Ȃ��L�[�ō폜
+	// 存在しないキーで削除
 	EXPECT_FALSE(Table.Delete(20));
 	EXPECT_EQ(2, Table.GetSize());
 }
 
 /**
-* @brief	�`�F�C���ɂȂ��Ă���v�f�����ɍ폜���Ă������ۂ̋���
+* @brief	チェインになっている要素を順に削除していった際の挙動
 * @details	ID:25
-*			�f�[�^�̍폜�̋@�\�̃e�X�g�ł�
-*			�`�F�C���ɂȂ��Ă���v�f�����ɍ폜�������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの削除の機能のテストです
+*			チェインになっている要素を順に削除した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableDelete, ChainElementDeleteInOrder)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// �}��
+	// 挿入
 	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// ���Ԃɍ폜
+	// 順番に削除
 	EXPECT_TRUE(Table.Delete(0));
 	EXPECT_TRUE(Table.Delete(10));
 
-	// �v�f���̃`�F�b�N
+	// 要素数のチェック
 	EXPECT_EQ(0, Table.GetSize());
 }
 
 #pragma endregion
-#pragma region ***** �f�[�^�̌��� *****
+#pragma region ***** データの検索 *****
 
 /**
-* @brief	���X�g����ł���ꍇ�ɁA�L�[���w�肵�Č��������ۂ̋���
+* @brief	リストが空である場合に、キーを指定して検索した際の挙動
 * @details	ID:27
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			���X�g����̎��Ɍ����������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			リストが空の時に検索した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST(HashTableFind, Empty)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_FALSE(Table.Find(0, Result));
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA���݂���L�[�Ŏw�肵�Č��������ۂ̋���
+* @brief	リストに複数の要素がある場合に、存在するキーで指定して検索した際の挙動
 * @details	ID:28
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����v�f���鎞�ɁA���݂���L�[�Ō����������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、存在するキーで検索した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST_F(HashTableFindF, SomeDataExist)
 {
-	// �����v�f�����邱�Ƃ��m�F
+	// 複数要素があることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_TRUE(m_Table.Find(0, Result));
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA���݂��Ȃ��L�[�Ŏw�肵�Č��������ۂ̋���
+* @brief	リストに複数の要素がある場合に、存在しないキーで指定して検索した際の挙動
 * @details	ID:29
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����v�f���鎞�ɁA���݂��Ȃ��L�[�Ō����������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、存在しないキーで検索した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST_F(HashTableFindF, NotExistKey)
 {
-	// �����v�f���邱�Ƃ��m�F
+	// 複数要素あることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_FALSE(m_Table.Find(3, Result));
 }
 
 /**
-* @brief	���X�g�ɕ����̗v�f������ꍇ�ɁA�����L�[��2�A���Ō��������ۂ̋���
+* @brief	リストに複数の要素がある場合に、同じキーで2連続で検索した際の挙動
 * @details	ID:30
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			���X�g�ɕ����v�f���鎞�ɁA�����L�[�Ō����������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			リストに複数要素ある時に、同じキーで検索した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST_F(HashTableFindF, SameKey)
 {
-	// �����v�f���邱�Ƃ��m�F
+	// 複数要素あることを確認
 	ASSERT_GE(m_Table.GetSize(), 2u);
 
-	// 1��ڂ̌���
+	// 1回目の検索
 	std::string Result;
 	EXPECT_TRUE(m_Table.Find(0, Result));
 	EXPECT_EQ("Test0", Result);
 
-	// 2��ڂ̌���
+	// 2回目の検索
 	Result.clear();
 	EXPECT_TRUE(m_Table.Find(0, Result));
 	EXPECT_EQ("Test0", Result);
@@ -682,70 +682,70 @@ TEST_F(HashTableFindF, SameKey)
 }
 
 /**
-* @brief	���ɍ폜���ꂽ�L�[�Ō��������ۂ̋���
+* @brief	既に削除されたキーで検索した際の挙動
 * @details	ID:31
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			���ɍ폜���ꂽ�L�[�Ō����������̋������m�F���܂��B
-*			false���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			既に削除されたキーで検索した時の挙動を確認します。
+*			falseが返れば成功です。
 */
 TEST(HashTableFind, DeletedKey)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// 1���f�[�^��}��
+	// 1件データを挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0"));
 
-	// �폜
+	// 削除
 	ASSERT_TRUE(Table.Delete(0));
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_FALSE(Table.Find(0, Result));
 }
 
 /**
-* @brief	�`�F�C���ɂȂ��Ă���v�f�̓���1�̃L�[���w�肵�Č��������ۂ̋���
+* @brief	チェインになっている要素の内の1つのキーを指定して検索した際の挙動
 * @details	ID:32
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			�`�F�C���ɂȂ��Ă���v�f�̓��̈���Ō����������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			チェインになっている要素の内の一方で検索した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableFind, Chain)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// 2���f�[�^��}��
+	// 2件データを挿入
 	ASSERT_TRUE(Table.Insert(0,  "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_TRUE(Table.Find(0, Result));
 	EXPECT_EQ("Test0_0", Result);
 }
 
 /**
-* @brief	�`�F�C���ɂȂ��Ă���v�f������1�̍폜������ɁA�c���Ă���v�f�����������ۂ̋���
+* @brief	チェインになっている要素うちの1つの削除した後に、残っている要素を検索した際の挙動
 * @details	ID:33
-*			�f�[�^�̌����̋@�\�̃e�X�g�ł�
-*			�`�F�C���ɂȂ��Ă���v�f�̓��̈�����폜���A�c���Ă���v�f�������������̋������m�F���܂��B
-*			true���Ԃ�ΐ����ł��B
+*			データの検索の機能のテストです
+*			チェインになっている要素の内の一方を削除し、残っている要素を検索した時の挙動を確認します。
+*			trueが返れば成功です。
 */
 TEST(HashTableFind, DeleteChainOther)
 {
-	// �n�b�V���e�[�u��
+	// ハッシュテーブル
 	HashTable<int, std::string, RemainderHash, 10> Table;
 
-	// 2���f�[�^��}��
+	// 2件データを挿入
 	ASSERT_TRUE(Table.Insert(0, "Test0_0"));
 	ASSERT_TRUE(Table.Insert(10, "Test0_1"));
 
-	// �Е����폜
+	// 片方を削除
 	ASSERT_TRUE(Table.Delete(0));
 
-	// ����
+	// 検索
 	std::string Result;
 	EXPECT_TRUE(Table.Find(10, Result));
 	EXPECT_EQ("Test0_1", Result);
