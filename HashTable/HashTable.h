@@ -8,6 +8,7 @@
 //===== インクルード =====
 #include <cstdint>
 #include <type_traits>
+#include <functional>
 #include "LinkedList.h"
 
 //===== クラス定義 =====
@@ -16,18 +17,18 @@
 * @note		ハッシュ関数が返す値がバケットサイズを超えるとAssertが発生するので、バケットサイズは十分大きな値にしてください。
 * @tparam	KeyType		キーの型
 * @tparam	DataType	格納したいデータの型
-* @tparam	HashFunc	ハッシュ関数(引数がKeyType または const KeyType& を1つとる(KeyType&&は許可しない)、戻り値がint32_tのもの)
+* @tparam	HashFunc	ハッシュ関数(引数がKeyType または const KeyType& を1つとる(KeyType&&は許可しない)、戻り値が整数型のもの)
 * @tparam	BucketSize	バケットサイズ
 */
-template<class KeyType, class DataType, class HashFunc, std::int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc = std::hash<KeyType>, std::int32_t BucketSize = 10>
 class HashTable
 {
 	// BucketSizeが0より大きいことを確認する
 	static_assert(BucketSize > 0, "BucketSize must greater than 0");
 
-	// 関数オブジェクトHashFuncがint32_tでハッシュ値を返すか確認する
-	static_assert(std::is_same<std::result_of<HashFunc(const KeyType&)>::type, std::int32_t>::value == true, 
-				  "HashFunc must return hash value as int32_t");
+	// 関数オブジェクトHashFuncが整数型でハッシュ値を返すか確認する
+	static_assert(std::is_integral<std::result_of<HashFunc(const KeyType&)>::type>::value == true, 
+				  "HashFunc must return hash value as integral type");
 
 	//=== 構造体定義
 private:

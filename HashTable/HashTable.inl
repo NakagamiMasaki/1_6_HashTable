@@ -105,8 +105,9 @@ int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyTy
 {
 	auto Hash = HashFunc()(Key);
 
-	// ハッシュ値がBucketSizeを超えていないかチェック
-	assert(Hash <= BucketSize && "BucketSize is too small.");
+	// ハッシュ値がBucketSizeを超えないように
+	// BucketSizeで割ったときの余りを使う
+	Hash = Hash % BucketSize;
 
 	return Hash;
 }

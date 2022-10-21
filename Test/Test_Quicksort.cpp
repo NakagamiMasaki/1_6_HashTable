@@ -600,7 +600,7 @@ TEST(Quicksort, NoKeySelected)
 * @details	ID:9
 *			イテレータどうしの距離を測る機能のチェックです。
 *			要素数が0の時、Distanceに先頭イテレータと末尾イテレータを渡した時の挙動を確認します。
-*			エラー値 : 0未満(LinkedList<DataType>::kInvalidIterator)が返れば成功です。
+*			0が返れば成功です。
 */
 TEST(Distance, NoItem)
 {
@@ -609,13 +609,11 @@ TEST(Distance, NoItem)
 
 	// 非コンストなイテレータ
 	auto Dis = List.Distance(List.GetBegin(), List.GetEnd());
-	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(0, Dis);
 
 	// コンストなイテレータ
 	Dis = List.Distance(List.GetConstBegin(), List.GetConstEnd());
-	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(0, Dis);
 }
 
 /**
@@ -623,7 +621,7 @@ TEST(Distance, NoItem)
 * @details	ID:10
 *			イテレータどうしの距離を測る機能のチェックです。
 *			要素数が0の時、Distanceに先頭イテレータと末尾イテレータを逆にして渡した時の挙動を確認します。
-*			エラー値 : 0未満(LinkedList<DataType>::kInvalidIterator)が返れば成功です。
+*			0が返れば成功です。
 */
 TEST(Distance, NoItemRev)
 {
@@ -632,13 +630,11 @@ TEST(Distance, NoItemRev)
 
 	// 非コンストなイテレータ
 	auto Dis = List.Distance(List.GetEnd(), List.GetBegin());
-	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(0, Dis);
 
 	// コンストなイテレータ
 	Dis = List.Distance(List.GetConstEnd(), List.GetConstBegin());
-	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(0, Dis);
 }
 
 /**
@@ -664,19 +660,19 @@ TEST_F(DistanceF, SomeItem)
 * @details	ID:12
 *			イテレータどうしの距離を測る機能のチェックです。
 *			複数の要素を持つ時、Distanceに先頭イテレータと末尾イテレータを逆にして渡した時の挙動を確認します。
-*			エラー値 : 0未満(LinkedList<DataType>::kInvalidIterator)が返れば成功です。
+*			エラー値 : 0未満(LinkedList<DataType>::kUnreachable)が返れば成功です。
 */
 TEST_F(DistanceF, SomeItemRev)
 {
 	// 非コンストなイテレータ
 	auto Dis = pList->Distance(pList->GetEnd(), pList->GetBegin());
 	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(LinkedList<ScoreData>::kUnreachable, Dis);
 
 	// コンストなイテレータ
 	Dis = pList->Distance(pList->GetConstEnd(), pList->GetConstBegin());
 	EXPECT_LT(Dis, 0);
-	EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+	EXPECT_EQ(LinkedList<ScoreData>::kUnreachable, Dis);
 }
 
 /**
@@ -764,7 +760,7 @@ TEST_F(DistanceF, CenterToEnd)
 * @details	ID:16
 *			イテレータどうしの距離を測る機能のチェックです。
 *			複数の要素を持つ時、Distanceに先頭でも末尾でもないイテレータと末尾イテレータを逆にして渡した時の挙動を確認します。
-*			エラー値 : 0未満(LinkedList<DataType>::kInvalidIterator)が返れば成功です。
+*			エラー値 : 0未満(LinkedList<DataType>::kUnreachable)が返れば成功です。
 */
 TEST_F(DistanceF, CenterToEndRev)
 {
@@ -774,7 +770,7 @@ TEST_F(DistanceF, CenterToEndRev)
 		--Itr;
 		auto Dis = pList->Distance(pList->GetEnd(), Itr);
 		EXPECT_LT(Dis, 0);
-		EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+		EXPECT_EQ(LinkedList<ScoreData>::kUnreachable, Dis);
 	}
 
 	// コンストなイテレータ
@@ -783,7 +779,7 @@ TEST_F(DistanceF, CenterToEndRev)
 		--Itr;
 		auto Dis = pList->Distance(pList->GetConstEnd(), Itr);
 		EXPECT_LT(Dis, 0);
-		EXPECT_EQ(LinkedList<ScoreData>::kInvalidIterator, Dis);
+		EXPECT_EQ(LinkedList<ScoreData>::kUnreachable, Dis);
 	}
 }
 
