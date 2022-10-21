@@ -375,6 +375,9 @@ TEST(HashTableInsert, Empty)
 */
 TEST_F(HashTableInsertF, NotDuplicated)
 {
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
+
 	// 重複しないように追加
 	EXPECT_TRUE(m_Table.Insert(3, "Test3"));
 
@@ -391,6 +394,9 @@ TEST_F(HashTableInsertF, NotDuplicated)
 */
 TEST_F(HashTableInsertF, Duplicated)
 {
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
+
 	// 重複するように挿入
 	EXPECT_FALSE(m_Table.Insert(0, "Test0_1"));
 
@@ -407,6 +413,9 @@ TEST_F(HashTableInsertF, Duplicated)
 */
 TEST_F(HashTableInsertF, Synonym)
 {
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
+
 	// ハッシュ値が重複するように挿入
 	// キーの値を10で割ったときの余りをハッシュにしているので
 	// 10を渡すと0と同じハッシュになる
@@ -418,7 +427,7 @@ TEST_F(HashTableInsertF, Synonym)
 
 /**
 * @brief	一度挿入し、削除した後再度同じキーで挿入した際の挙動
-* @details	ID:16
+* @details	ID:17
 *			データの挿入の機能のテストです
 *			一度挿入し、削除した後に同じキーで挿入した時の挙動を確認します。
 *			trueが返れば成功です。
@@ -472,6 +481,9 @@ TEST(HashTableDelete, Empty)
 */
 TEST_F(HashTableDeleteF, SomeDataExist)
 {
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
+
 	// 削除
 	EXPECT_TRUE(m_Table.Delete(0));
 
@@ -488,6 +500,9 @@ TEST_F(HashTableDeleteF, SomeDataExist)
 */
 TEST_F(HashTableDeleteF, SomeDataExitNotExistKey)
 {
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
+
 	// 削除
 	EXPECT_FALSE(m_Table.Delete(3));
 
@@ -617,8 +632,8 @@ TEST(HashTableFind, Empty)
 */
 TEST_F(HashTableFindF, SomeDataExist)
 {
-	// 複数要素あることを確認
-	ASSERT_GT(m_Table.GetSize(), 2u);
+	// 複数要素があることを確認
+	ASSERT_GE(m_Table.GetSize(), 2u);
 
 	// 検索
 	std::string Result;
@@ -635,7 +650,7 @@ TEST_F(HashTableFindF, SomeDataExist)
 TEST_F(HashTableFindF, NotExistKey)
 {
 	// 複数要素あることを確認
-	ASSERT_GT(m_Table.GetSize(), 2u);
+	ASSERT_GE(m_Table.GetSize(), 2u);
 
 	// 検索
 	std::string Result;
@@ -652,7 +667,7 @@ TEST_F(HashTableFindF, NotExistKey)
 TEST_F(HashTableFindF, SameKey)
 {
 	// 複数要素あることを確認
-	ASSERT_GT(m_Table.GetSize(), 2u);
+	ASSERT_GE(m_Table.GetSize(), 2u);
 
 	// 1回目の検索
 	std::string Result;

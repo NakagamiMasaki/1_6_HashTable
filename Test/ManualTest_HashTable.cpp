@@ -114,28 +114,6 @@ TEST(HashTableInsert, IsNotConst)
 
 /**
 * @brief	非constのメソッドであるか
-* @details	ID:18
-*			データの挿入の機能のテストです
-*			constなハッシュテーブルから呼び出してコンパイルエラーになるか確認します。
-*			コンパイルエラーになれば成功です。
-*/
-TEST(HashTableInsert, IsNotConst)
-{
-#ifdef HASH_TABLE_INSERT_IS_NOT_CONST
-
-	// cosntなハッシュテーブル
-	const HashTable<int, float, HashFunc, 10> Table;
-
-	// constなハッシュテーブルから呼び出す
-	Table.Insert(0, 0.0f);
-
-#else
-	SUCCEED();
-#endif
-}
-
-/**
-* @brief	非constのメソッドであるか
 * @details	ID:26
 *			データの削除の機能のテストです
 *			constなハッシュテーブルから呼び出してコンパイルエラーになるか確認します。
