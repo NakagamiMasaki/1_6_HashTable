@@ -8,24 +8,24 @@
 
 //===== 関数定義 =====
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 HashTable<KeyType, DataType, HashFunc, BucketSize>::HashTable(void)
 	: m_ElementCount(0)
 {
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 HashTable<KeyType, DataType, HashFunc, BucketSize>::~HashTable(void)
 {
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 size_t HashTable<KeyType, DataType, HashFunc, BucketSize>::GetSize(void) const
 {
 	return m_ElementCount;
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Insert(const KeyType& Key, const DataType& Data)
 {
 	// ハッシュ値計算
@@ -53,7 +53,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Insert(const KeyType& K
 	return true;
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Delete(const KeyType& Key)
 {
 	// ハッシュ値計算
@@ -80,7 +80,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Delete(const KeyType& K
 	return true;
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
 bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key, DataType& Data) const
 {
 	// ハッシュ値計算
@@ -100,8 +100,8 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key
 	return true;
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
-int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyType& Key) const
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
+size_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyType& Key) const
 {
 	auto Hash = HashFunc()(Key);
 
@@ -112,8 +112,8 @@ int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyTy
 	return Hash;
 }
 
-template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
-typename HashTable<KeyType, DataType, HashFunc, BucketSize>::ListItr HashTable<KeyType, DataType, HashFunc, BucketSize>::GetData(int32_t Hash, const KeyType& Key) const
+template<class KeyType, class DataType, class HashFunc, size_t BucketSize>
+typename HashTable<KeyType, DataType, HashFunc, BucketSize>::ListItr HashTable<KeyType, DataType, HashFunc, BucketSize>::GetData(size_t Hash, const KeyType& Key) const
 {
 	//*** ハッシュを元にキーに紐づいたデータを探す
 	// ハッシュ値のチェック(CalcHashで計算した結果を使えば問題ない)

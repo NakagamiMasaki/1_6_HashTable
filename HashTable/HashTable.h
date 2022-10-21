@@ -20,7 +20,7 @@
 * @tparam	HashFunc	ハッシュ関数(引数がKeyType または const KeyType& を1つとる(KeyType&&は許可しない)、戻り値が整数型のもの)
 * @tparam	BucketSize	バケットサイズ
 */
-template<class KeyType, class DataType, class HashFunc = std::hash<KeyType>, std::int32_t BucketSize = 10>
+template<class KeyType, class DataType, class HashFunc = std::hash<KeyType>, size_t BucketSize = 10>
 class HashTable
 {
 	// BucketSizeが0より大きいことを確認する
@@ -125,7 +125,7 @@ protected:
 	* @param[in]	ハッシュ化したいキー
 	* @return		ハッシュ値
 	*/
-	int32_t CalcHash(const KeyType& Key) const;
+	size_t CalcHash(const KeyType& Key) const;
 
 	/**
 	* @brief		データをイテレータで取得する
@@ -135,7 +135,7 @@ protected:
 	* @retval		リストのイテレータ			Hash, Keyに該当するデータがある時
 	* @retval		リストの末尾イテレータ		Hash, Keyに該当するデータがなかった時
 	*/
-	ListItr GetData(int32_t Hash, const KeyType& Key) const;
+	ListItr GetData(size_t Hash, const KeyType& Key) const;
 
 };
 
