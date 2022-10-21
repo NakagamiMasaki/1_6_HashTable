@@ -16,7 +16,10 @@ namespace ex06_HashTable
 {
 
 //===== 定数定義 =====
-static const uint32_t CRC32Table[] = {
+/**
+* @brief	CRC32用の定数
+*/
+static const uint32_t kCRC32Table[] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
 	0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
 	0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -92,26 +95,36 @@ class RemainderHash
 {
 public:
 
-	int32_t operator()(int key)
+	/**
+	* @brief		ハッシュ値を計算して返す
+	* @param[in]	key	キー
+	* @return		ハッシュ値
+	*/
+	size_t operator()(int key)
 	{
 		return key % 10;
 	}
 };
 
 /**
-* @brief	ハッシュ値が0~9になるように丸めて返す
+* @brief	CRC32でハッシュ値を求める
 */
 class CRC32Hash
 {
 public:
 
-	// 0 ~ 9になるように丸める
-	int32_t operator()(int key)
+	/**
+	* @brief		ハッシュ値を計算して返す
+	* @param[in]	key	キー
+	* @return		ハッシュ値
+	*/
+	size_t operator()(int key)
 	{
-		uint32_t Hash = 0;
+		uint32_t Hash           = 0;
+		const uint32_t HashInit = 0;
 
-		Hash = 0 ^ 0xFFFFFFFF;
-		Hash = ((Hash >> 8) & 0x00FFFFFF) ^ CRC32Table[(Hash ^ key) & 0xFF];
+		Hash = HashInit ^ 0xFFFFFFFF;
+		Hash = ((Hash >> 8) & 0x00FFFFFF) ^ kCRC32Table[(Hash ^ key) & 0xFF];
 		
 		return Hash;
 	}
@@ -193,16 +206,16 @@ TYPED_TEST(HashTableBehaviorTest, HashFunction)
 	//*** 挿入→検索→削除の順に試す
 	// データ挿入
 	EXPECT_TRUE(Table.Insert(0, "Test0"));
-	ASSERT_EQ(1, Table.GetSize());		// 要素数をチェック
+	EXPECT_EQ(1, Table.GetSize());		// 要素数をチェック
 
 	// 検索
 	std::string Result;
 	EXPECT_TRUE(Table.Find(0, Result));
-	ASSERT_EQ(1, Table.GetSize());		// 要素数をチェック
+	EXPECT_EQ(1, Table.GetSize());		// 要素数をチェック
 
 	// 削除
 	EXPECT_TRUE(Table.Delete(0));
-	ASSERT_EQ(0, Table.GetSize());		// 要素数をチェック
+	EXPECT_EQ(0, Table.GetSize());		// 要素数をチェック
 }
 
 #pragma endregion 
