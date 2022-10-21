@@ -141,10 +141,14 @@
   <ItemGroup>
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="Stack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HashTable.inl" />
     <None Include="LinkedList.inl" />
+    <None Include="Queue.inl" />
+    <None Include="Stack.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

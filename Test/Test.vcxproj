@@ -36,7 +36,9 @@
     <ClInclude Include="ManualTest_HashTable.h" />
     <ClInclude Include="ManualTest_Iterator.h" />
     <ClInclude Include="ManualTest_List.h" />
+    <ClInclude Include="ManualTest_Queue.h" />
     <ClInclude Include="ManualTest_Quicksort.h" />
+    <ClInclude Include="ManualTest_Stack.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ScoreData.h" />
     <ClInclude Include="TestHelper.h" />
@@ -45,7 +47,9 @@
     <ClCompile Include="ManualTest_HashTable.cpp" />
     <ClCompile Include="ManualTest_Iterator.cpp" />
     <ClCompile Include="ManualTest_List.cpp" />
+    <ClCompile Include="ManualTest_Queue.cpp" />
     <ClCompile Include="ManualTest_Quicksort.cpp" />
+    <ClCompile Include="ManualTest_Stack.cpp" />
     <ClCompile Include="Test_HashTable.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -55,7 +59,9 @@
     </ClCompile>
     <ClCompile Include="Test_Iterator.cpp" />
     <ClCompile Include="Test_List.cpp" />
+    <ClCompile Include="Test_Queue.cpp" />
     <ClCompile Include="Test_Quicksort.cpp" />
+    <ClCompile Include="Test_Stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HashTable\HashTable.vcxproj">

@@ -21,12 +21,24 @@
     <ClInclude Include="LinkedList.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LinkedList.inl">
       <Filter>ヘッダー ファイル</Filter>
     </None>
     <None Include="HashTable.inl">
+      <Filter>ヘッダー ファイル</Filter>
+    </None>
+    <None Include="Queue.inl">
+      <Filter>ヘッダー ファイル</Filter>
+    </None>
+    <None Include="Stack.inl">
       <Filter>ヘッダー ファイル</Filter>
     </None>
   </ItemGroup>
