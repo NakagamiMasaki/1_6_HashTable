@@ -48,7 +48,7 @@ private:
 protected:
 
 	//! 内部で使用するリストのイテレータの別名
-	using ListItr = typename LinkedList<Pair>::Iterator;
+	using ListItr = typename LinkedList<Pair>::ConstIterator;
 
 	//=== メンバ変数
 private:
@@ -58,9 +58,6 @@ private:
 
 	//! データ件数
 	size_t		m_ElementCount;
-
-	//! ハッシュ関数
-	HashFunc	m_HashFunc;
 
 	//=== メンバ関数
 public:
@@ -93,7 +90,7 @@ public:
 
 	/**
 	* @brief		データを挿入する
-	* @note			指定したキーが既にハッシュテーブルに存在していた場合、失敗となり何も起こりません
+	* @note			指定したキーが既に存在していた場合、失敗となり何も起こりません
 	* @param[in]	Key		キー(重複不可)
 	* @param[in]	Data	格納したいデータ
 	* @retval		true	成功
@@ -103,7 +100,7 @@ public:
 
 	/**
 	* @brief		データを削除する
-	* @note			指定したキーがハッシュテーブルに存在しなかった場合、失敗となり何も起こりません
+	* @note			指定したキーが存在しなかった場合、失敗となり何も起こりません
 	* @param[in]	Key		キー
 	* @retval		true	成功
 	* @retval		false	失敗
@@ -112,12 +109,13 @@ public:
 
 	/**
 	* @brief		データを検索して返す
+	* @note			指定したキーが存在しなかった場合、失敗となり何も起こりません
 	* @param[in]	Key		キー
 	* @param[out]	Data	取得したデータの格納先
 	* @retval		true	データがあった時
 	* @retval		false	データがなかった時
 	*/
-	bool Find(const KeyType& Key, DataType& Data);
+	bool Find(const KeyType& Key, DataType& Data) const;
 
 protected:
 
@@ -126,7 +124,7 @@ protected:
 	* @param[in]	ハッシュ化したいキー
 	* @return		ハッシュ値
 	*/
-	int32_t CalcHash(const KeyType& Key);
+	int32_t CalcHash(const KeyType& Key) const;
 
 	/**
 	* @brief		データをイテレータで取得する
@@ -136,7 +134,7 @@ protected:
 	* @retval		リストのイテレータ			Hash, Keyに該当するデータがある時
 	* @retval		リストの末尾イテレータ		Hash, Keyに該当するデータがなかった時
 	*/
-	ListItr GetData(int32_t Hash, const KeyType& Key);
+	ListItr GetData(int32_t Hash, const KeyType& Key) const;
 
 };
 

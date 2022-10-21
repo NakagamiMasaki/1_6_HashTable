@@ -34,7 +34,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Insert(const KeyType& K
 	//*** キーが重複していないかチェック
 	// もし重複していたら、末尾以外のイテレータが返ってくる
 	auto Itr = GetData(Hash, Key);
-	if (m_List[Hash].GetEnd() != Itr)
+	if (m_List[Hash].GetConstEnd() != Itr)
 	{
 		return false;
 	}
@@ -62,7 +62,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Delete(const KeyType& K
 	//*** データがあるかチェック
 	// もしデータが無ければ、末尾のイテレータが返ってくる
 	auto Itr = GetData(Hash, Key);
-	if (m_List[Hash].GetEnd() == Itr)
+	if (m_List[Hash].GetConstEnd() == Itr)
 	{
 		return false;
 	}
@@ -81,7 +81,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Delete(const KeyType& K
 }
 
 template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
-bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key, DataType& Data)
+bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key, DataType& Data) const
 {
 	// ハッシュ値計算
 	auto Hash = CalcHash(Key);
@@ -89,7 +89,7 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key
 	//*** データがあるかチェック
 	// もしデータが無ければ、末尾のイテレータが返ってくる
 	auto Itr = GetData(Hash, Key);
-	if (m_List[Hash].GetEnd() == Itr)
+	if (m_List[Hash].GetConstEnd() == Itr)
 	{
 		return false;
 	}
@@ -101,9 +101,9 @@ bool HashTable<KeyType, DataType, HashFunc, BucketSize>::Find(const KeyType& Key
 }
 
 template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
-int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyType& Key)
+int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyType& Key) const
 {
-	auto Hash = m_HashFunc(Key);
+	auto Hash = HashFunc()(Key);
 
 	// ハッシュ値がBucketSizeを超えていないかチェック
 	assert(Hash <= BucketSize && "BucketSize is too small.");
@@ -112,11 +112,11 @@ int32_t HashTable<KeyType, DataType, HashFunc, BucketSize>::CalcHash(const KeyTy
 }
 
 template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
-typename HashTable<KeyType, DataType, HashFunc, BucketSize>::ListItr HashTable<KeyType, DataType, HashFunc, BucketSize>::GetData(int32_t Hash, const KeyType& Key)
+typename HashTable<KeyType, DataType, HashFunc, BucketSize>::ListItr HashTable<KeyType, DataType, HashFunc, BucketSize>::GetData(int32_t Hash, const KeyType& Key) const
 {
 	//*** ハッシュを元にキーに紐づいたデータを探す
-	auto Itr       = m_List[Hash].GetBegin();
-	const auto End = m_List[Hash].GetEnd();
+	auto Itr       = m_List[Hash].GetConstBegin();
+	const auto End = m_List[Hash].GetConstEnd();
 	for (; Itr != End; ++Itr)
 	{
 		const auto& Data = *Itr;

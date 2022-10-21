@@ -15,6 +15,8 @@
 namespace ex06_HashTable
 {
 
+//===== クラス定義 =====
+
 /**
 * @brief 10で割った余りをハッシュとして返す
 */
@@ -49,7 +51,6 @@ class Hash
 {
 public:
 
-	// 0 ~ 9になるように丸める
 	int32_t operator()(int key)
 	{
 		return std::hash<int>()(key) % 10;
@@ -64,6 +65,9 @@ class HashTableTypedTest : public ::testing::Test
 {
 };
 
+/**
+* @brief	ハッシュテーブルのテスト用フィクスチャ
+*/
 class HashTableFixture : public ::testing::Test
 {
 	//=== メンバ変数
@@ -94,6 +98,8 @@ protected:
 	}
 
 };
+
+//===== 型エイリアス =====
 
 /**
 * @brief	ハッシュテーブルのクラスの挙動テスト用クラス
