@@ -116,6 +116,8 @@ template<class KeyType, class DataType, class HashFunc, int32_t BucketSize>
 typename HashTable<KeyType, DataType, HashFunc, BucketSize>::ListItr HashTable<KeyType, DataType, HashFunc, BucketSize>::GetData(int32_t Hash, const KeyType& Key) const
 {
 	//*** ハッシュを元にキーに紐づいたデータを探す
+	// ハッシュ値のチェック(CalcHashで計算した結果を使えば問題ない)
+	assert(Hash < BucketSize && "Hash must be less than BucketSize.");
 	auto Itr       = m_List[Hash].GetConstBegin();
 	const auto End = m_List[Hash].GetConstEnd();
 	for (; Itr != End; ++Itr)
